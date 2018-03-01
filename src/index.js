@@ -1,6 +1,7 @@
 import death from 'death'
 import dotenv from 'dotenv'
 import debug from 'debug'
+import Product from './product'
 import { 
   openQueueConnection, 
   consumeMessage 
@@ -10,6 +11,7 @@ const whenProcessDie = death({
   uncaughtException: true 
 })
 
+const error = debug('consumer:product:operations:error') 
 const log = debug('consumer:product:operations:log') 
 
 /** 
@@ -41,7 +43,15 @@ const main = async () => {
 
   const { connection, channel } = await openQueueConnection(AMQP_ENDPOINT, QUEUE_NAME)
 
-  await consumeMessage(channel, QUEUE_NAME, msg => log(msg.content.toString()))
+  await consumeMessage(channel, QUEUE_NAME, async msg => { 
+    try{
+      const parsedMessage = JSON.parse(msg.content.toString())
+      await new Product(parsedMessage).save()
+      log('New product added')
+    } catch (err) {
+      error(err)
+    }
+  })
 
   whenProcessDie(async () => {
     log('Closing... cleaning things up...')
