@@ -7,6 +7,10 @@ import {
   consumeMessage 
 } from 'queue'
 
+import { Product as ProductContract } from 'messages'
+
+
+
 const whenProcessDie = death({ 
   uncaughtException: true 
 })
@@ -45,8 +49,15 @@ const main = async () => {
 
   await consumeMessage(channel, QUEUE_NAME, async msg => { 
     try{
-      const parsedMessage = JSON.parse(msg.content.toString())
-      await new Product(parsedMessage).save()
+      const product = await (new ProductContract()).decode(msg.content)
+
+      await new Product({
+        name: product.name, 
+        description: product.description,
+        sku: product.sku,
+        created_at: product.createdAt
+      }).save()
+
       log('New product added')
     } catch (err) {
       error(err)
