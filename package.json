@@ -16,8 +16,9 @@
     "koa": "^2.5.0",
     "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.4.0",
+    "messages": "file:../messages",
     "pg": "^7.4.1",
-    "queue": "file:../libs/queue/",
+    "queue": "file:../libs/queue",
     "rimraf": "^2.6.2"
   },
   "devDependencies": {
@@ -37,7 +38,8 @@
     "eslint": "^4.18.1",
     "eslint-plugin-jsdoc": "3.3.1",
     "jest": "^22.4.2",
-    "regenerator-runtime": "^0.11.1"
+    "regenerator-runtime": "^0.11.1",
+    "yarn": "^1.5.1"
   },
   "scripts": {
     "clean": "rimraf {cache,coverage,dist}",
